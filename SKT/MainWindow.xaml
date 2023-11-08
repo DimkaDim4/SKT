@@ -1,0 +1,583 @@
+﻿<Window x:Class="SKT.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SKT"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="800" Width="800">
+
+    <DockPanel
+        VerticalAlignment="Stretch"
+        Height="Auto"
+        LastChildFill="True">
+
+        <Menu 
+            Height="20" 
+            DockPanel.Dock="Top">
+            <MenuItem  Header="File">
+                <MenuItem Header="Open Project" ></MenuItem>
+                <MenuItem Header="Exit" ></MenuItem>
+            </MenuItem>
+        </Menu>
+
+        <TabControl DockPanel.Dock="Top">
+            <TabItem Header="Model">
+                <DockPanel x:Name="Model_DockPanel">
+
+                    <GroupBox
+                        Header="Finite element Mesh"
+                        DockPanel.Dock="Left" 
+                        Width="200"
+                        Height="Auto">
+
+                        <DockPanel>
+                            <Button DockPanel.Dock="Top" Click="Read_mesh_from_file">Read mesh from file</Button>
+                            <Button DockPanel.Dock="Top" Click="Generate_mesh">Generate mesh</Button>
+                            <Button DockPanel.Dock="Top" Click="Save_mesh">Save mesh</Button>
+
+                            <Expander
+                                DockPanel.Dock="Top"
+                                Header="Nodes">
+
+                                <DockPanel>
+                                    <Grid 
+                                        DockPanel.Dock="Top"
+                                        ShowGridLines="False">
+                                        
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Grid.Row="0" Grid.Column="0" Content="Count of nodes" Grid.ColumnSpan="2"/>
+                                        <Label Grid.Row="1" Grid.Column="0" Content="Min X"/>
+                                        <Label Grid.Row="1" Grid.Column="2" Content="Min Z"/>
+                                        <Label Grid.Row="2" Grid.Column="0" Content="Max X"/>
+                                        <Label Grid.Row="2" Grid.Column="2" Content="Max Z"/>
+
+                                        <Label x:Name="LabelCN" Grid.Row="0" Grid.Column="2" Content="{Binding CountNodes}"/>
+                                        <Label x:Name="LabelMinX" Grid.Row="1" Grid.Column="1" Content="{Binding MinX}"/>
+                                        <Label x:Name="LabelMaxX" Grid.Row="2" Grid.Column="1" Content="{Binding MaxX}"/>
+                                        <Label x:Name="LabelMinZ" Grid.Row="1" Grid.Column="3" Content="{Binding MinZ}"/>
+                                        <Label x:Name="LabelMaxZ" Grid.Row="2" Grid.Column="3" Content="{Binding MaxZ}"/>
+
+                                    </Grid>
+
+                                    <Label DockPanel.Dock="Top" Content="List of nodes" HorizontalAlignment="Center"/>
+
+                                    <DataGrid 
+                                        x:Name="NodesGrid"
+                                        DockPanel.Dock="Top"
+                                        IsReadOnly="True"
+                                        CanUserAddRows="False"
+                                        AutoGenerateColumns="False"
+                                        VerticalScrollBarVisibility="Auto">
+                                        
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Width="*" Header="N" Binding="{Binding N}"/>
+                                            <DataGridTextColumn Width="*" Header="X" Binding="{Binding X}"/>
+                                            <DataGridTextColumn Width="*" Header="Z" Binding="{Binding Z}"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </DockPanel>
+                            </Expander>
+
+                            <Expander
+                                DockPanel.Dock="Top"
+                                Header="Elements">
+
+                                <DockPanel
+                                    Height="Auto">
+                                    <Grid 
+                                        DockPanel.Dock="Top"
+                                        ShowGridLines="False">
+                                        
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"></RowDefinition>
+                                            <RowDefinition Height="Auto"></RowDefinition>
+                                        </Grid.RowDefinitions>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Grid.Row="0" Grid.Column="0" Content="Count of elements"/>
+                                        <Label Grid.Row="1" Grid.Column="0" Content="Mes"/>
+
+                                        <Label x:Name="LabelCE" Grid.Row="0" Grid.Column="1" Content="{Binding CountElements}"/>
+                                        <Label x:Name="LabelMes" Grid.Row="1" Grid.Column="1" Content="{Binding Mes}"/>
+
+                                    </Grid>
+
+                                    <Label DockPanel.Dock="Top" Content="List of elements" HorizontalAlignment="Center"/>
+
+                                    <DataGrid
+                                        x:Name="ElementsGrid"
+                                        DockPanel.Dock="Top"
+                                        AutoGenerateColumns="False"
+                                        IsReadOnly="True"
+                                        CanUserAddRows="False"
+                                        VerticalScrollBarVisibility="Auto">
+                                        
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Width="*" Header="N" Binding="{Binding N}"/>
+                                            <DataGridTextColumn Width="*" Header="N1" Binding="{Binding N1}"/>
+                                            <DataGridTextColumn Width="*" Header="N2" Binding="{Binding N2}"/>
+                                            <DataGridTextColumn Width="*" Header="N3" Binding="{Binding N3}"/>
+                                            <DataGridTextColumn Width="*" Header="N4" Binding="{Binding N4}"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </DockPanel>
+                            </Expander>
+                            
+                            <Expander
+                                DockPanel.Dock="Top"
+                                Header="Medium properties">
+
+                                <DockPanel>
+
+                                    <Grid 
+                                        DockPanel.Dock="Top"
+                                        ShowGridLines="False">
+                                        
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Grid.Row="0" Grid.Column="0" Content="Min P"/>
+                                        <Label Grid.Row="0" Grid.Column="2" Content="Max P"/>
+                                        
+                                        <Label x:Name="LabelMinP" Grid.Row="0" Grid.Column="1" Content="{Binding MinP}"/>
+                                        <Label x:Name="LabelMaxP" Grid.Row="0" Grid.Column="3" Content="{Binding MaxP}"/>
+
+                                    </Grid>
+
+                                    <Label DockPanel.Dock="Top" Content="List of P" HorizontalAlignment="Center"/>
+
+                                    <DataGrid
+                                        x:Name="PGrid"
+                                        DockPanel.Dock="Top"
+                                        AutoGenerateColumns="False"
+                                        CanUserAddRows="False"
+                                        VerticalScrollBarVisibility="Auto">
+                                        
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Width="*" Header="N" Binding="{Binding N}"/>
+                                            <DataGridTextColumn Width="*" Header="P" Binding="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+                                        </DataGrid.Columns>
+                                        
+                                    </DataGrid>
+                                </DockPanel>
+                            </Expander>
+                            
+                        </DockPanel>
+                        
+                    </GroupBox>
+
+                    <WpfPlot
+                        x:Name="MeshChart"
+                        DockPanel.Dock="Right"/>
+                    
+                </DockPanel>
+
+            </TabItem>
+
+            <TabItem Header="Observing">
+
+                <DockPanel x:Name="Model_ObservingPanel">
+
+                    <GroupBox
+                        Header="Observing setting"
+                        DockPanel.Dock="Left" 
+                        Width="300">
+
+                        <DockPanel>
+
+                            <Button DockPanel.Dock="Top" Click="Read_receivers_from_file">Read receivers from file</Button>
+                            <Button DockPanel.Dock="Top" Click="Generate_receivers">Generate receivers</Button>
+                            <Button DockPanel.Dock="Top" Click="Save_receivers">Save receivers</Button>
+
+                            <Expander
+                                DockPanel.Dock="Top"
+                                Header="Profiles">
+
+                                <DockPanel>
+                                    <Grid 
+                                        DockPanel.Dock="Top"
+                                        ShowGridLines="False">
+
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Grid.Row="0" Grid.Column="0" Content="Count of profiles" Grid.ColumnSpan="2"/>
+
+                                    </Grid>
+
+                                    <Label DockPanel.Dock="Top" Content="List of profiles" HorizontalAlignment="Center"/>
+
+                                    <DataGrid
+                                        x:Name="ProfilesGrid"
+                                        DockPanel.Dock="Top"     
+                                        AutoGenerateColumns="False"
+                                        VerticalScrollBarVisibility="Auto"
+                                        SelectionChanged="ProfilesGrid_SelectionChanged"
+                                        IsReadOnly="True"
+                                        CanUserAddRows="False">
+                                        
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Width="*" Header="N" Binding="{Binding N}"/>
+                                            
+                                            <DataGridTemplateColumn >
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Button Width="10" Height="10" Click="ButtonChangeColor_Click"  Background="{Binding Brush, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            
+                                            <DataGridTextColumn Width="*" Header="Count" Binding ="{Binding Count}"/>
+                                            <DataGridTextColumn Width="*" Header="X0" Binding="{Binding X0}"/>
+                                            <DataGridTextColumn Width="*" Header="X1" Binding="{Binding X1}"/>
+                                            <DataGridTextColumn Width="*" Header="Z0" Binding="{Binding Z0}"/>
+                                            <DataGridTextColumn Width="*" Header="Z1" Binding="{Binding Z1}"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </DockPanel>
+                            </Expander>
+
+                            <Expander
+                                DockPanel.Dock="Top"
+                                Header="Nodes of profile">
+
+                                <DockPanel>
+                                    
+
+                                    <Label DockPanel.Dock="Top" Content="Nodes list of profile" HorizontalAlignment="Center"/>
+
+                                    <DataGrid
+                                        x:Name="NodesOfProfilesGrid"
+                                        DockPanel.Dock="Top"
+                                        AutoGenerateColumns="False"
+                                        VerticalScrollBarVisibility="Auto"
+                                        CanUserAddRows="False"
+                                        IsReadOnly="True">
+
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Width="*" Header="N" Binding="{Binding N}"/>
+                                            <DataGridTextColumn Width="*" Header="X" Binding="{Binding X}"/>
+                                            <DataGridTextColumn Width="*" Header="Z" Binding="{Binding Z}"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </DockPanel>
+                            </Expander>
+
+                            
+
+                        </DockPanel>
+
+                    </GroupBox>
+
+                    <WpfPlot
+                        x:Name="ObservingChart"
+                        DockPanel.Dock="Right"/>
+
+                </DockPanel>
+
+
+            </TabItem>
+
+            <TabItem Header="Forward calculation">
+
+                <Grid Height="Auto" Width="Auto">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.6*"></RowDefinition>
+                        <RowDefinition Height="0.4*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <GroupBox Grid.Row="0" Grid.Column="0" Grid.RowSpan="2">
+                        <StackPanel>
+                            <CheckBox
+                                x:Name="CheckBoxShowModel"
+                                Checked="CheckBoxShowModel_Checked"
+                                Unchecked="CheckBoxShowModel_Unchecked">
+                                Show model
+                            </CheckBox>
+                            <CheckBox 
+                                x:Name="CheckBoxShowObserving"
+                                Checked="CheckBoxShowObserving_Checked"
+                                Unchecked="CheckBoxShowObserving_Unchecked">
+                                Show observing
+                            </CheckBox>
+
+                            <Button>Read calculation from file</Button>
+
+                            <GroupBox Header="Calculations">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition></RowDefinition>
+                                        <RowDefinition></RowDefinition>
+                                    </Grid.RowDefinitions>
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition></ColumnDefinition>
+                                        <ColumnDefinition></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Grid.Row="0" Grid.Column="0" Content="Calculation Mode"/>
+
+                                    <ComboBox
+                                        x:Name="ComboBoxCalculationMode"
+                                        Grid.Row="1" Grid.Column="0"
+                                        ItemsSource="{Binding Source={local:EnumBindingSource {x:Type local:CalculationMode}}}"/>
+
+                                    <Button 
+                                        Grid.Row="1" 
+                                        Grid.Column="1" 
+                                        Click="Forward_Calculation" Margin="2,0,2,0"
+                                        >
+                                        Calculation
+                                    </Button>
+
+                                </Grid>
+
+                            </GroupBox>
+
+                            <Button>Save calculation</Button>
+                        </StackPanel>
+
+                    </GroupBox>
+
+                    
+
+                    <WpfPlot x:Name="ForwardChart" Grid.Row="1" Grid.Column="1"/>
+
+                    <WpfPlot x:Name="ForwardModel" Grid.Row="0" Grid.Column="1"/>
+
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Inverse calculations">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+
+                    <DockPanel Grid.Column="0">
+                        <GroupBox Header="Observing" DockPanel.Dock="Top">
+                            <StackPanel>
+                                <Button Click="LoadFromObserving" Content="Load from 'Forward calculation'"/>
+                                <Button Content="Read from file"/>
+                            </StackPanel>
+                        </GroupBox>
+                        
+                        <GroupBox Header="Mesh" DockPanel.Dock="Top">
+                            <StackPanel>
+                                <Button Click="LoadFromModel" Content="Load from 'Model'"/>
+                                <Button Content="Read from file"/>
+                                <Button Click="Generate_inverse_mesh" Content="Generate mesh"/>
+                            </StackPanel>
+                        </GroupBox>
+
+                        <GroupBox Header="Inverse setting" DockPanel.Dock="Top">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <CheckBox x:Name="CheckBoxRegularization" Grid.Row="0" Content="Use regularization"></CheckBox>
+
+                                
+                                <Label Grid.Row="1" IsEnabled="{Binding ElementName=CheckBoxRegularization, Path=IsChecked}">
+                                    Start gamma
+                                </Label>
+                                <TextBox x:Name="TextBoxStartGamma" Grid.Row="2"
+                                         IsEnabled="{Binding ElementName=CheckBoxRegularization, Path=IsChecked}"
+                                         Text="{Binding StartGamma}"/>
+
+                                
+                                <Label Grid.Row="3" IsEnabled="{Binding ElementName=CheckBoxRegularization, Path=IsChecked}">
+                                    Allowable parameter difference
+                                </Label>
+                                <TextBox x:Name="TextBoxAllowMaxDifference" Grid.Row="4"
+                                         IsEnabled="{Binding ElementName=CheckBoxRegularization, Path=IsChecked}"
+                                         Text="{Binding AllowMaxDifference}"/>
+
+                                
+                                <Label Grid.Row="5" IsEnabled="{Binding ElementName=CheckBoxRegularization, Path=IsChecked}">
+                                    Multiplication factor
+                                </Label>
+                                <TextBox x:Name="TextBoxGammaMul" Grid.Row="6"
+                                         IsEnabled="{Binding ElementName=CheckBoxRegularization, Path=IsChecked}"
+                                         Text="{Binding GammaMult}"/>
+
+                                
+                                <Label Grid.Row="7" IsEnabled="{Binding ElementName=CheckBoxRegularization, Path=IsChecked}">
+                                    Maximum increase in functionality
+                                </Label>
+                                <TextBox x:Name="TextBoxMaxFunctionalInPercent"  Grid.Row="8"
+                                         IsEnabled="{Binding ElementName=CheckBoxRegularization, Path=IsChecked}"
+                                         Text="{Binding MaxFunctionalInPercent}"/>
+
+                                
+                                <Label Grid.Row="9" IsEnabled="{Binding ElementName=CheckBoxRegularization, Path=IsChecked}">
+                                    Maximum iterations
+                                </Label>
+                                <TextBox x:Name="TextBoxMaxIterations" Grid.Row="10" 
+                                         IsEnabled="{Binding ElementName=CheckBoxRegularization, Path=IsChecked}" 
+                                         Text="{Binding MaxIterations}"/>
+
+                                <RadioButton Grid.Row="11" IsChecked="True"  IsEnabled="{Binding ElementName=CheckBoxRegularization, Path=IsChecked}" Checked="RadioButton_ShowAllIterations">
+                                    Show all iterations
+                                </RadioButton>
+
+                                <RadioButton Grid.Row="12" IsEnabled="{Binding ElementName=CheckBoxRegularization, Path=IsChecked}" Checked="RadioButton_ShowFirstAndLast">
+                                    Show first and last iterations
+                                </RadioButton>
+
+                                <ComboBox
+                                        x:Name="ComboBoxInverseCalculationMode"
+                                        Grid.Row="13"
+                                        ItemsSource="{Binding Source={local:EnumBindingSource {x:Type local:CalculationMode}}}"/>
+                            </Grid>
+                        </GroupBox>
+
+                        <GroupBox Header="Calculations" DockPanel.Dock="Top">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                </Grid.RowDefinitions>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Button Grid.Row="0" Click="Inverse_Calculation">Calculation</Button>
+
+                                <Label Grid.Row="1">Iterations</Label>
+
+                                <DataGrid
+                                        x:Name="ListOfInverseIteration"
+                                        Grid.Row="2"
+                                        AutoGenerateColumns="False"
+                                        VerticalScrollBarVisibility="Auto"
+                                        CanUserAddRows="False"
+                                        IsReadOnly="True"
+                                        SelectionChanged="ListOfInverseIteration_SelectionChanged">
+
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Width="*" Header="Iteration" Binding="{Binding NumIter}"/>
+                                        <DataGridTextColumn Width="*" Header="Functinal" Binding="{Binding Func}"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+
+                                <Label Grid.Row="3">List of P</Label>
+
+                                <DataGrid
+                                        Grid.Row="4"
+                                        x:Name="ListOfInverseP"
+                                        AutoGenerateColumns="False"
+                                        VerticalScrollBarVisibility="Auto"
+                                        CanUserAddRows="False"
+                                        IsReadOnly="True"
+                                        LoadingRow="DataGrid_LoadingRow">
+
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Width="*" Header="P" Binding="{Binding}"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+
+
+                            </Grid>
+                        </GroupBox>
+
+                    </DockPanel>
+
+                    <WpfPlot x:Name="InverseModelChart" Grid.Column="1"/>
+
+                    <GridSplitter ShowsPreview="False"
+                        Grid.Column="2" HorizontalAlignment="Center"
+                        VerticalAlignment="Stretch" Width="3">
+                    </GridSplitter>
+                    
+
+                    <Grid x:Name="GridDataCharts" Grid.Column="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <WpfPlot x:Name="ReadDataChart" Grid.Row="0"/>
+
+                        <GridSplitter Grid.Row="1" Height="5"
+                            HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                        <WpfPlot x:Name="InverseDataChart" Grid.Row="2"/>
+
+                        <GridSplitter Grid.Row="3" Height="5"
+                            HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                        <WpfPlot x:Name="DeltaDataChart" Grid.Row="4"/>
+
+                    </Grid>
+                    
+                </Grid>
+            </TabItem>
+
+        </TabControl>
+    </DockPanel>
+</Window>
